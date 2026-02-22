@@ -1,25 +1,18 @@
 import json
 from typing import Any, List
 from openai import OpenAI
-from prompts import PROMPTS
 from db_execute import get_all_books, add_complete_book
 from schema import Book
-
-
-MDLS = {
-    'O': 'openai/gpt-oss-20b',
-    'M': 'mistralai/devstral-small-2-2512',
-    'DS': 'deepseek/deepseek-r1-0528-qwen3-8b',
-}
+from settings import settings
 
 
 def generate_books() -> dict[str, Any]:
     books = get_all_books()
     messages = [
-        {"role": "system", "content": PROMPTS["fake"]["system"]},
+        {"role": "system", "content": settings.prompts["fake"]["system"]},
         {
             "role": "user",
-            "content": PROMPTS["fake"]["user"]
+            "content": settings.prompts["fake"]["user"]
             + f"\nСписок книг которые генерировать не нужно здесь: {books}.",
         },
     ]
@@ -30,15 +23,20 @@ def generate_books() -> dict[str, Any]:
     )
 
     response = client.chat.completions.create(
-        model=MDLS['O'],
+        model=settings.model,
         messages=messages,
         temperature=0.6,
     )
 
     message = response.choices[0].message
     content = message.content
-    if "</think>" in content:
-        content = content.split("</think>")[-1].strip()
+    if content := message.content:
+        if "</think>" in content:
+            content = content.split("</think>")[-1].strip()
+        if "<|begin_of_box|>" in content:
+            content = content.split("<|begin_of_box|>")[-1].strip()
+        if "<|message|>" in content:
+            content = content.split("<|message|>")[-1].strip()
 
     try:
         data = json.loads(content)

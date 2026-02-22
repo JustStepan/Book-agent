@@ -32,7 +32,7 @@ TOOLS_DESCRIPTION = [
         "type": "function",
         "function": {
             "name": "find_smallest_description",
-            "description": "Функция возвращает id записи в БД с наименьшим описанием книги(description)",
+            "description": "Функция возвращает словарь с id и description книги с наименьшим описанием в БД",
             "parameters": {
                 "type": "object",
                 "properties": {},

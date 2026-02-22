@@ -2,10 +2,10 @@ from typing import List
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker, joinedload
 from models import Author, Book, Genre
-from pathlib import Path
+from settings import settings
 
-BASE_DIR = Path(__file__).parent
-engine = create_engine(f"sqlite:///{BASE_DIR}/local_db.sqlite")
+
+engine = create_engine(settings.database_url)
 Session = sessionmaker(bind=engine)
 
 

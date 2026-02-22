@@ -25,10 +25,6 @@ class Book(BaseModel):
     rating: float
     description: str
 
-class SearchResult(BaseModel):
-    type: str  # "books" | "count" | "text" | "error"
-    data: Any
-
 
 class SearchRequest(BaseModel):
     user_message: str = Field(..., min_length=1, description="Поисковый запрос пользователя")
