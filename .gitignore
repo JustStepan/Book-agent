@@ -11,9 +11,11 @@ wheels/
 
 # DB
 *.sqlite
+*.sqlite3
 
 # Local files/folders
 *_local_
+chroma_db
 
 # сасhes
 .mypy_cache
