@@ -1,3 +1,5 @@
+import pprint
+
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
@@ -19,15 +21,30 @@ def get_collection():
 
 def search_books_by_meaning(query: str, n_results: int = 3) -> list:
     collection = get_collection()
+
     results = collection.query(
         query_texts=[query],
         n_results=n_results
     )
-    return results
-    # return {
-    #     "documents": results["documents"],
-    #     "metadatas": results["metadatas"],
-    #     "distances": results["distances"],
-    # }
 
-print(search_books_by_meaning('воспоминание', 5))
+    ids_list = results['ids'][0]
+    docs_list = results['documents'][0]
+    dists_list = results['distances'][0]
+    metas_list = results['metadatas'][0]
+
+    final_results = []
+
+    for i in range(len(ids_list)):
+        final_results.append({
+            "rank": i + 1,  # Место в выборке (начинаем с 1)
+            "score": dists_list[i],  # Расстояние (косинусное)
+            "db_id": ids_list[i],
+            "documents": docs_list[i],
+            "metadatas": metas_list[i],
+            "description": f"{i + 1} место в выборке с результатом косинусного совпадения: {dists_list[i]}"
+        })
+
+    return final_results
+
+
+pprint.pprint(search_books_by_meaning('кот мурзилка в башне', 5))
