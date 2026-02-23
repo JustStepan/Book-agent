@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     version: str = '0.0.1'
 
     database_url: str = f"sqlite:///{BASE_DIR}/local_db.sqlite"
-    model: str = MODELS['O']
+    model: str = MODELS['DS']
     prompts: dict = PROMPTS
 
 
