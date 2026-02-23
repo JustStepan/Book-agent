@@ -29,7 +29,7 @@ def generate_books() -> dict[str, Any]:
     )
 
     message = response.choices[0].message
-    content = message.content
+    content = message.content or "" # Это нужно позже оформить в красивую функцию.
     if content := message.content:
         if "</think>" in content:
             content = content.split("</think>")[-1].strip()
