@@ -1,8 +1,12 @@
-from typing import List
+from typing import List, Union
+from ChromaDB import search_books_by_meaning
 from db_execute import get_all_books, get_books_by_author, get_book_by_title, get_min_description, del_one_book
 from fake_db import fill_db
 from schema import Book
 
+
+def search_by_meaning(query: str, n_books: int = 3) -> List[dict[str, Union[int, float, str]]]:
+    return search_books_by_meaning(query, n_books)
 
 def del_book(book_id: int)-> dict:
     return del_one_book(book_id)
@@ -28,6 +32,31 @@ def new_books_db(amount: int) -> List[Book]:
 
 
 TOOLS_DESCRIPTION = [
+    {
+        "type": "function",
+        "function": {
+            "name": "search_by_meaning",
+            "description": """Семантический поиск книг по смыслу, теме или настроению.
+Используй когда пользователь описывает что хочет почитать, а не называет
+конкретную книгу. Перед передачей в query — расширь запрос пользователя:
+добавь синонимы, тематику, жанр, настроение.
+Например: 'про войну' → 'военный роман, сражения, героизм, исторический конфликт'""",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Улучшенный запрос пользователя на поиск книг по смыслу. Можно расширить для лучшего поиска."
+                    },
+                    "n_books": {
+                        "type": "integer",
+                        "description": "количество ворзвращаемых книг (Опционально, только если пользователь просит)"
+                    },
+                },
+                "required": ["query"],
+            }
+        }
+    },
     {
         "type": "function",
         "function": {

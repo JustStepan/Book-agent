@@ -19,7 +19,8 @@ def get_collection():
     )
 
 
-def search_books_by_meaning(query: str, n_results: int = 3) -> list:
+def search_books_by_meaning(query: str, n_results: int) -> list:
+    query = query.lower().strip()
     collection = get_collection()
 
     results = collection.query(
